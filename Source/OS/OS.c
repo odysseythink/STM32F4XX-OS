@@ -22,24 +22,36 @@ Others      :
 #include <stdint.h>
 #include <limits.h>
 #include "stm32f4xx.h"
+#include "OS.h"
 
-/* define a EN_OS_Task_ID_Type */
-#include "OS_CLASS.h"
+/** define a EN_OS_Task_ID_Type */
+typedef enum  {
+#define OS_TASK(taskID, periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg) EN_Task_ID_##taskID,
+#include "OS_Conf.h"
+    OS_TASK_MAX 
+}EN_OS_Task_ID_Type;
+
+
+/** extern a periodicFunc list */
+#define OS_TASK(taskID, periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg)   extern void periodicFunc(void *);
 #include "OS_Conf.h"
 
-/* extern a periodicFunc list */
-#include "OS_CLASS.h"
+/** extern a initFunc list */
+#define OS_TASK(taskID, periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg)   extern void initFunc(void);
 #include "OS_Conf.h"
 
-/* extern a initFunc list */
-#include "OS_CLASS.h"
+/** extern a loopFunc list */
+#define OS_TASK(taskID, periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg)   extern void loopFunc(void *);
 #include "OS_Conf.h"
+
 
 /* define a g_astOSTaskArray array */
-#include "OS_CLASS.h"
+Task g_astOSTaskArray[OS_TASK_MAX] = {
+#define OS_TASK(taskID, periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg)   {periodicFunc, loopFunc, initFunc, mode, period, periodBackup, arg},
 #include "OS_Conf.h"
+};
 
-#include "OS.h"
+
 
 
 
@@ -137,30 +149,38 @@ void OS_Init(void)
 
 void OS_Loop(void)
 {
-    uint32_t iLoop, uiLocalTimeBackup = 0;
+    uint32_t iLoop, uiLocalTimeBackup = 0, uiDiff = 0;
 
     uiLocalTimeBackup = g_stOSCB.uiLocalTime;
+
+    /** period function */
     if(uiLocalTimeBackup != g_stOSCB.uiLastTime)
     {
         for(iLoop = 0; iLoop < OS_TASK_MAX; iLoop++)
         {
             if(g_astOSTaskArray[iLoop].period != 0)
             {
-                if(g_astOSTaskArray[iLoop].period >= uiLocalTimeBackup - g_stOSCB.uiLastTime)
+                if(uiLocalTimeBackup > g_stOSCB.uiLastTime)
                 {
-                    if(uiLocalTimeBackup > g_stOSCB.uiLastTime)
-                    {
-                        g_astOSTaskArray[iLoop].period -= uiLocalTimeBackup - g_stOSCB.uiLastTime;
-                    }
-                    else
-                    {
-                        g_astOSTaskArray[iLoop].period -= uiLocalTimeBackup + UINT_MAX - g_stOSCB.uiLastTime;
-                    }
+                    uiDiff = uiLocalTimeBackup - g_stOSCB.uiLastTime;
+                }
+                else if (uiLocalTimeBackup < g_stOSCB.uiLastTime)
+                {
+                    uiDiff = uiLocalTimeBackup + UINT_MAX - g_stOSCB.uiLastTime;
+                }
+                else /*!< uiLocalTimeBackup = g_stOSCB.uiLastTime */
+                {
+                    uiDiff = 0;
+                }
+
+                if(g_astOSTaskArray[iLoop].period >= uiDiff)
+                {
+                    g_astOSTaskArray[iLoop].period -= uiDiff;
                 }
                 else
                 {
                     g_astOSTaskArray[iLoop].period = 0;
-                }
+                }                  
             }
 
             if(0 == g_astOSTaskArray[iLoop].period)
@@ -183,7 +203,17 @@ void OS_Loop(void)
                 }
             }
         } 
-        g_stOSCB.uiLastTime = uiLocalTimeBackup;
+
+        g_stOSCB.uiLastTime = g_stOSCB.uiLocalTime;
+    }   
+
+    /** loop function */
+    for(iLoop = 0; iLoop < OS_TASK_MAX; iLoop++)
+    {
+        if(g_astOSTaskArray[iLoop].loopFunc)
+        {
+            g_astOSTaskArray[iLoop].loopFunc(g_astOSTaskArray[iLoop].arg);
+        }        
     }
 }
 

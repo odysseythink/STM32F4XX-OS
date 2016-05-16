@@ -28,9 +28,10 @@
 
     
 /* Private macro&definde------------------------------------------------------*/
-#define __MAIN_PROMPT__
-#define __MAIN_ASSERT__
-
+#ifdef SERIAL_DEBUG
+    #define __MAIN_PROMPT__
+    #define __MAIN_ASSERT__
+#endif
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -39,24 +40,7 @@
 /* External functions --------------------------------------------------------*/
 /* External variables --------------------------------------------------------*/
     
-/*******************************************************************************
- Prototype    : Main_Prompt
- Description  : main prompt function
- Input        : 
-                
-                
-                
- Output       : 
- Return Value : static
- Calls        : 
- Called By    : 
- 
- History      :
-  1.Date         -- 2016/1/25 19:12:55:792
-    Author       -- ranwei
-    Modification -- Created function
 
-*******************************************************************************/
 static void Main_Prompt(int line, const char *func, const char *format, ...)
 #ifdef __MAIN_PROMPT__
 {
@@ -71,58 +55,37 @@ static void Main_Prompt(int line, const char *func, const char *format, ...)
 }
 #endif
 
-/*******************************************************************************
- Prototype    : Main_Assert
- Description  : main assert function
- Input        : 
-                
-                
-                
- Output       : 
- Return Value : static
- Calls        : 
- Called By    : 
- 
- History      :
-  1.Date         -- 2016/1/25 19:13:10:862
-    Author       -- ranwei
-    Modification -- Created function
 
-*******************************************************************************/
-static void Main_Assert(int line, const char *func, const char *format, ...)
-#ifdef __MAIN_ASSERT__
-{
-    va_list args;
-
-    va_start(args, format);
-    __Assert__(__FILE__, line, func, format, args);
-    va_end(args);    
-}
-#else
-{
-}
-#endif
 
 
 void test1_Init(void)
 {
-    printf("task test1 init\n");
+    printf("test1_Init\n");
 }
 
 void test2_Init(void)
 {
-    printf("task test2 init\n");
+    printf("test2_Init\n");
 }
 
 
-void test1_task(void *arg)
+void test1_PerioProc(void *arg)
 {
-    printf("Hello world, task %s\n", (char *)arg);
+    printf("task 1 : %s\n", (char *)arg); 
 }
 
-void test2_task(void *arg)
+void test1_LoopProc(void *arg)
 {
-    printf("Hello world, task %s\n", (char *)arg);
+}
+
+
+void test2_PerioProc(void *arg)
+{
+    printf("task 2 : %s\n", (char *)arg); 
+}
+
+void test2_LoopProc(void *arg)
+{
 }
 
 
@@ -152,7 +115,7 @@ void test2_task(void *arg)
 *******************************************************************************/  
 int main(void)
 {        
-    NVIC_SetVectorTable(0x8000000, 0x40000);	
+    //NVIC_SetVectorTable(0x8000000, 0x40000);	
 #ifdef SERIAL_DEBUG
     DebugComPort_Init();
     printf("------------------------------------------------------------------------------------------------");printf("\n");
@@ -168,14 +131,15 @@ int main(void)
     printf("                                                     %s", __SYSTEM_VERSION);printf("\n");
     printf("------------------------------------------------------------------------------------------------");printf("\n");
 
-#endif
     Main_Prompt(__LINE__, __FUNCTION__, "System start");
+#endif
+    
 
     OS_Init();     
 
     for(;;)
     {
-        OS_Loop();			
+        OS_Loop();
     }
     
 }

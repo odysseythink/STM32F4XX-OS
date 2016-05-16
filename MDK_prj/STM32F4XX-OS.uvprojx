@@ -313,7 +313,7 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x8040000</StartAddress>
+                <StartAddress>0x8000000</StartAddress>
                 <Size>0x100000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
@@ -414,7 +414,7 @@
       </TargetOption>
       <Groups>
         <Group>
-          <GroupName>Startup</GroupName>
+          <GroupName>ST_Libraries\Startup</GroupName>
           <Files>
             <File>
               <FileName>startup_stm32f4xx.s</FileName>
@@ -424,7 +424,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>CMSIS</GroupName>
+          <GroupName>ST_Libraries\CMSIS</GroupName>
           <Files>
             <File>
               <FileName>system_stm32f4xx.c</FileName>
@@ -434,7 +434,7 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>STM32F4xx_StdPeriph_Driver</GroupName>
+          <GroupName>ST_Libraries\STM32F4xx_StdPeriph_Driver</GroupName>
           <Files>
             <File>
               <FileName>stm32f4xx_gpio.c</FileName>
@@ -459,6 +459,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>ST_Libraries</GroupName>
+          <Files>
+            <File>
+              <FileName>stm32f4xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Source\ST_Libraries\stm32f4xx_it.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>OS</GroupName>
           <Files>
             <File>
@@ -476,11 +486,6 @@
               <FileType>5</FileType>
               <FilePath>..\Source\OS\OS_Conf.h</FilePath>
             </File>
-            <File>
-              <FileName>OS_CLASS.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Source\OS\OS_CLASS.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
@@ -490,11 +495,6 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Source\User\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Source\ST_Libraries\stm32f4xx_it.c</FilePath>
             </File>
           </Files>
         </Group>

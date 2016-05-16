@@ -30,12 +30,31 @@ extern "C"{
 /*============================================================================*/
 /*                                  @INCLUDES                                 */
 /*============================================================================*/
-
+#include <stdint.h>
 
 
 /*============================================================================*/
 /*                              @MACROS & @TYPEDEFS                           */
 /*============================================================================*/
+typedef enum{
+    EN_TASK_Periodic,
+    EN_TASK_OneShot,
+}EN_TASK_Mode_Type;
+
+typedef void (* Task_Periodic_Func_Type)(void *arg);
+typedef void (* Task_Loop_Func_Type)(void *arg);
+typedef void (* Task_Init_Func_Type)(void);
+
+typedef struct _Task{
+    Task_Periodic_Func_Type periodicFunc;
+    Task_Loop_Func_Type loopFunc;
+    Task_Init_Func_Type initFunc;
+    EN_TASK_Mode_Type mode;
+    uint16_t period;
+    uint16_t periodBackup;
+    void *arg;
+}Task;
+
 
 
 

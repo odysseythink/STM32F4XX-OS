@@ -40,19 +40,6 @@ extern "C"{
 /*                              @MACROS & @TYPEDEFS                           */
 /*============================================================================*/
 /*
-** @group : Public macros
-** @{
-*/
-typedef enum {OFF, ON=!OFF}EN_SWITCH_TYPE;
-typedef enum {LOW, HIGH=!LOW}EN_PIN_STAT_TYPE;
-
-/*
-** @}
-*/
-
-
-
-/*
 ** @group : System Version
 ** @{
 */
@@ -71,7 +58,6 @@ typedef enum {LOW, HIGH=!LOW}EN_PIN_STAT_TYPE;
 
 /* retarget the printf to com */
 #define SERIAL_DEBUG 
- 
 
 
 

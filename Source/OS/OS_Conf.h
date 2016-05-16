@@ -17,8 +17,6 @@
 #ifndef __OS_CONF_H__
 #define __OS_CONF_H__
 
-
-
 /* Uncomment the next line to choose avalable period */
 //#define OS_PERIOD  1000 /* 1ms */
 //#define OS_PERIOD  1000000 /* 1us */
@@ -27,33 +25,16 @@
 #define OS_PERIOD 10000 /* 100us */
 
 
-typedef enum{
-    EN_TASK_Periodic,
-    EN_TASK_OneShot,
-}EN_TASK_Mode_Type;
-
-typedef void (* Task_Periodic_Func_Type)(void *arg);
-typedef void (* Task_Init_Func_Type)(void);
-
-typedef struct _Task{
-    Task_Periodic_Func_Type periodicFunc;
-    Task_Init_Func_Type initFunc;
-    EN_TASK_Mode_Type mode;
-    unsigned short period;
-    unsigned short periodBackup;
-    void *arg;
-}Task;
-
 #define OS_PERIOD_UNIT_1MS *OS_PERIOD/1000
 
 #endif /* __OS_CONF_H__ */
 
-BEGIN_OS
 
-OS_TASK(EN_Task_ID_TEST1, test1_task, test1_Init, EN_TASK_Periodic, 1000 OS_PERIOD_UNIT_1MS, 1000 OS_PERIOD_UNIT_1MS, "hello test1")   
-OS_TASK(EN_Task_ID_TEST2, test2_task, test2_Init, EN_TASK_Periodic, 2000 OS_PERIOD_UNIT_1MS, 2000 OS_PERIOD_UNIT_1MS, "ranwei")  
 
-END_OS
+OS_TASK(TEST1, test1_PerioProc, test1_LoopProc, test1_Init, EN_TASK_Periodic, 500 OS_PERIOD_UNIT_1MS, 500 OS_PERIOD_UNIT_1MS, "hello test1")   
+OS_TASK(TEST2, test2_PerioProc, test2_LoopProc, test2_Init, EN_TASK_Periodic, 500 OS_PERIOD_UNIT_1MS, 500 OS_PERIOD_UNIT_1MS, "ranwei")  
 
+
+#undef  OS_TASK
 
 /**************** (C) COPYRIGHT 2010-2018 Efficient *****END OF FILE***********/

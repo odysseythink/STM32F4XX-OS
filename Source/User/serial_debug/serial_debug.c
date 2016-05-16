@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "main_conf.h"
-#include "serial_debug.h"
+#include "serial_debug\serial_debug.h"
 #include "stm32f4xx.h"
 
     
@@ -36,6 +36,7 @@
 #ifdef SERIAL_DEBUG
     #define SERIAL_DEBUG_COM                        USART2
     #define SERIAL_DEBUG_COM_CLK                    RCC_APB1Periph_USART2
+    #define SERIAL_DEBUG_COM_CLK_INIT               RCC_APB1PeriphClockCmd
     #define SERIAL_DEBUG_COM_TX_PIN                 GPIO_Pin_5
     #define SERIAL_DEBUG_COM_TX_GPIO_PORT           GPIOD
     #define SERIAL_DEBUG_COM_TX_GPIO_CLK            RCC_AHB1Periph_GPIOD
@@ -102,7 +103,7 @@ void __Assert__(const char *file, int line, const char *func, const char *format
     }
     memset(aucLogBuff, 0, sizeof(aucLogBuff));
     vsnprintf((char *)aucLogBuff, SZ_LogBuFF_MAXSIZE, format, argp);
-    printf("\n  Prompt : [%s %d]%s():", file, line, func);
+    printf("\n  Assert : [%s %d]%s():", file, line, func);
     printf("%s\n", aucLogBuff);
 
 }
@@ -121,20 +122,8 @@ void DebugComPort_Init(void)
     USART_InitTypeDef USART_InitStructure; 
     
     RCC_AHB1PeriphClockCmd(SERIAL_DEBUG_COM_TX_GPIO_CLK | SERIAL_DEBUG_COM_RX_GPIO_CLK, ENABLE);
-    RCC_APB1PeriphClockCmd(SERIAL_DEBUG_COM_CLK,ENABLE);
-    switch(SERIAL_DEBUG_COM_CLK)
-    {
-    case RCC_APB1Periph_USART2:
-    case RCC_APB1Periph_USART3:
-    case RCC_APB1Periph_UART4:
-    case RCC_APB1Periph_UART5:
-        RCC_APB1PeriphClockCmd(SERIAL_DEBUG_COM_CLK,ENABLE);
-        break;
-    case RCC_APB2Periph_USART1:
-    case RCC_APB2Periph_USART6:
-        RCC_APB2PeriphClockCmd(SERIAL_DEBUG_COM_CLK,ENABLE);
-        break;
-    }
+    SERIAL_DEBUG_COM_CLK_INIT(SERIAL_DEBUG_COM_CLK,ENABLE);
+
 
     /* Enable the USARTx Interrupt */
     //NVIC_InitStructure.NVIC_IRQChannel = IAP_COM1_IRQn;
@@ -182,8 +171,10 @@ void DebugComPort_Init(void)
 
     USART_Cmd(SERIAL_DEBUG_COM, ENABLE); 
 }
+#endif
 
 
+#ifdef SERIAL_DEBUG
 /* Use no semihosting */
 #pragma import(__use_no_semihosting)
 struct __FILE
@@ -203,8 +194,8 @@ PUTCHAR_PROTOTYPE
     /* e.g. write a character to the USART */
     while(!(SERIAL_DEBUG_COM->SR & USART_SR_TXE));
     USART_SendData(SERIAL_DEBUG_COM, (uint8_t) ch);
-    while(!(SERIAL_DEBUG_COM->SR & USART_SR_TC)); 	
-    
+    while(!(SERIAL_DEBUG_COM->SR & USART_SR_TC)); 
+
     return ch;
 }
 #endif
