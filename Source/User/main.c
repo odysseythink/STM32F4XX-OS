@@ -22,6 +22,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "main_conf.h"
+#include "main.h"
 #include <stdio.h>
 #include "serial_debug\serial_debug.h"
 #include "OS.h"
@@ -88,7 +89,27 @@ void test2_LoopProc(void *arg)
 {
 }
 
+void MainSystemCB_Init(void)
+{
 
+}
+UserSys_InitFunc_Register(MainSystemCB_Init);
+
+static void UserSys_Init(void)  
+{  
+    extern Init_Func_Type sys_init_func$$Base[];  /** sys_init_func 段的起始地址 */
+    extern Init_Func_Type sys_init_func$$Limit[]; /** sys_init_func 段的末尾地址 */ 
+    Init_Func_Type *pfunc = sys_init_func$$Base;  
+
+    if(sys_init_func$$Base != sys_init_func$$Limit)
+    {
+        while(pfunc < sys_init_func$$Limit)
+        {  
+            (*pfunc)();  
+            pfunc ++;  
+        }  
+    }    
+}
 
 
 /*******************************************************************************
@@ -133,16 +154,16 @@ int main(void)
 
     Main_Prompt(__LINE__, __FUNCTION__, "System start");
 #endif
-    
+    UserSys_Init();
 
-    OS_Init();     
-
+    OS_Init();
     for(;;)
     {
         OS_Loop();
     }
     
 }
+
 
 
 
