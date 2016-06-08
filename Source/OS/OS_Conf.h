@@ -33,6 +33,7 @@
 
 OS_TASK(TEST1, test1_PerioProc, test1_LoopProc, test1_Init, EN_TASK_Periodic, 500 OS_PERIOD_UNIT_1MS, 500 OS_PERIOD_UNIT_1MS, "hello test1")   
 OS_TASK(TEST2, test2_PerioProc, test2_LoopProc, test2_Init, EN_TASK_Periodic, 500 OS_PERIOD_UNIT_1MS, 500 OS_PERIOD_UNIT_1MS, "ranwei")  
+OS_TASK(Commu, Task_Commu_PerioProc, Task_Commu_LoopProc, Task_Commu_Init, EN_TASK_Periodic, 1000 OS_PERIOD_UNIT_1MS, 1000 OS_PERIOD_UNIT_1MS, NULL)  
 
 
 #undef  OS_TASK

@@ -23,6 +23,7 @@ Others      :
 #include <limits.h>
 #include "stm32f4xx.h"
 #include "OS.h"
+#include "main.h"
 
 /** define a EN_OS_Task_ID_Type */
 typedef enum  {
@@ -222,7 +223,6 @@ void OS_Time_Update(void)
 {
     g_stOSCB.uiLocalTime++; 
 }
-
 
 
 /**************** (C) COPYRIGHT 2010-2018 Efficient *****END OF FILE***********/
