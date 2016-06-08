@@ -42,18 +42,13 @@ extern "C"{
 /*============================================================================*/
 /*                              @MACROS & @TYPEDEFS                           */
 /*============================================================================*/
-#define __XBEE_COMMU_USE_UART4
+#define __COMMU_USE_UART4
 
 /** 经测试，发送和接收DMA缓冲区的最大值为255 */
 #define SZ_COMMU_DMA_BUFF_MAX 255 
 
 typedef void (*Accept_Func_Type)(uint8_t *pucData, uint16_t uslen);
 
-
-typedef enum{
-    EN_Commu_UART_XBEE,
-    EN_Commu_UART_OPS    
-}EN_Commu_UART_Type;
 
 
 /*============================================================================*/
@@ -67,7 +62,7 @@ void Commu_Uart_Init(void);
 int32_t Commu_Uart_SendData(uint8_t *pData, uint8_t len);
 void Commu_Uart_Subscribe(Accept_Func_Type Accept);
 void Commu_Uart_UnSubscribe(Accept_Func_Type Accept);
-uint32_t Commu_uart_IsTxLineValid(void);
+uint32_t Commu_Uart_IsTxLineValid(void);
 
 
 

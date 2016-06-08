@@ -190,7 +190,7 @@ static void _Commu_TxLoopProc(void)
     
     if(g_stCommuCB.pTxDataList->ucLen > 0)
     {
-        if(Commu_uart_IsTxLineValid())
+        if(Commu_Uart_IsTxLineValid())
         {
             pData = g_stCommuCB.pTxDataList->TailRemove(g_stCommuCB.pTxDataList);
             if(pData != NULL)
